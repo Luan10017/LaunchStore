@@ -22,7 +22,7 @@ module.exports = {
         }
 
         let results = await Procuct.create(req.body)
-        const productId = results.row[0].id
+        const productId = results.rows[0].id
 
         results = await Category.all()
         const categories = results.rows
