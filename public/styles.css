@@ -209,7 +209,7 @@ form .item textarea {
     min-height: 150px;
 }
 
-form .itam span {
+form .item span {
     padding: 8px 16px;
     background-color: var(--primary-color);
     border-radius: 16px;
