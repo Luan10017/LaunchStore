@@ -23,10 +23,18 @@ module.exports = {
 
         let results = await Procuct.create(req.body)
         const productId = results.rows[0].id
+        
+        return res.redirect(`/products/${productId}`)
+    },
+    async edit(req, res) {
+        let results = await Procuct.find(req.params.id)
+        const product = results.rows[0]
+
+        if(!product) return res.send("Product not found!")
 
         results = await Category.all()
         const categories = results.rows
 
-        return res.render("products/create.njk", {productId, categories})
+        return res.render("products/edit.njk", {product, categories})
     }
 }
