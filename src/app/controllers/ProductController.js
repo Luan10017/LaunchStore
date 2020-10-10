@@ -41,5 +41,25 @@ module.exports = {
         const categories = results.rows
 
         return res.render("products/edit.njk", {product, categories})
+    },
+    async put(req, res) {
+        const keys = Object.keys(req.body)
+
+        for(key of keys) {
+            if (req.body[key] == "") {
+                return res.send('Please, fill all fields!')
+            }
+        }
+
+        req.body.price = req.body.price.replace(/\D/g, "")
+
+        if (req.body.old_price != req.body.price) {
+            const oldProduct = await Procuct.find(req.body.id)
+            req.body.old_price = oldProduct.rows[0].price
+        }
+
+        await Procuct.update(req.body)
+
+        return res.redirect(`/products/${req.body.id}/edit`)
     }
 }
