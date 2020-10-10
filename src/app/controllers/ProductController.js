@@ -61,5 +61,10 @@ module.exports = {
         await Procuct.update(req.body)
 
         return res.redirect(`/products/${req.body.id}/edit`)
+    },
+    async delete(req, res) {
+        await Procuct.delete(req.body.id)
+
+        return res.redirect('/products/create')
     }
 }
