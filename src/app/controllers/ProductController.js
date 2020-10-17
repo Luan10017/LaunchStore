@@ -2,6 +2,7 @@ const { formatPrice } = require('../../lib/utils')
 
 const Category = require('../model/Category')
 const Procuct = require('../model/Product')
+const File = require('../model/File')
 
 module.exports = {
     create(req, res) {
@@ -25,8 +26,11 @@ module.exports = {
 
         let results = await Procuct.create(req.body)
         const productId = results.rows[0].id
-        
-        return res.redirect(`/products/${productId}`)
+
+        const filesPromise = req.files.map(file => File.create({...file, product_id: productId}))
+        await Promise.all(filesPromise)
+
+        return res.redirect(`/products/${productId}/edit`)
     },
     async edit(req, res) {
         let results = await Procuct.find(req.params.id)
