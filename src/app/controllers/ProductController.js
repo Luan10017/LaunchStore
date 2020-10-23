@@ -1,4 +1,4 @@
-const { formatPrice } = require('../../lib/utils')
+const { formatPrice, date } = require('../../lib/utils')
 
 const Category = require('../model/Category')
 const Procuct = require('../model/Product')
@@ -33,8 +33,24 @@ module.exports = {
 
         return res.redirect(`/products/${productId}/edit`)
     },
-    show(req,res) {
-        return res.render("products/show")
+    async show(req,res) {
+
+        let results = await Procuct.find(req.params.id)
+        const product = results.rows[0]
+
+        if(!product) return res.send('Product Not Found!')
+
+        const { day, hour, minutes, month } = date(product.updated_at)
+
+        product.published = {
+            day: `${day}/${month}`,
+            hour: `${hour}h${minutes}`
+        }
+
+        product.oldPrice = formatPrice(product.old_price)
+        product.price = formatPrice(product.price)
+
+        return res.render("products/show", {product})
     },
     async edit(req, res) {
         let results = await Procuct.find(req.params.id)
@@ -95,7 +111,7 @@ module.exports = {
 
         await Procuct.update(req.body)
 
-        return res.redirect(`/products/${req.body.id}/edit`)
+        return res.redirect(`/products/${req.body.id}`)
     },
     async delete(req, res) {
         await Procuct.delete(req.body.id)
